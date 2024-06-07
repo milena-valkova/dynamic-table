@@ -44,6 +44,21 @@ td:first-child {
   text-align: left;
 }
 
+.button {
+  border: 1px solid grey;
+  border-radius: .5rem;
+  padding: .3rem 1rem;
+}
+.button:hover{
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+.buttons-row{
+  display: flex ;
+  margin-top: .5rem;
+}
+
 /* common styles */
 .pos-left{
   float: left;

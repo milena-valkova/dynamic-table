@@ -2,32 +2,17 @@ import React, { useState } from 'react';
 import useStorage from '../hooks/useStorage';
 import useItems from '../hooks/useItems';
 import TableHead from './TableHead';
-import ManageField from './ManageField';
 import Report from './Report';
 import Field from './Field';
-import useField from '../hooks/useField';
 
 export default function TableWhole () {
   const { returnStorage, updateStorage } = useStorage();
   const { deleteItem } = useItems();
-  const { emptyField } = useField();
 
   const [fields, setFields] = useState(returnStorage("fields") || []);
   // const [fields, setFields] = useState([]);
   const [reports, setReports] = useState(returnStorage("reports") || []);
-  const [openInputBox, setOpenInputBox] = useState(false);
   const [editableReportId, setEditableReportId] = useState(null);
-  const [current, setCurrent] = useState({...emptyField, isSubitem: false});
-
-  const showInputBox = () => {
-    setOpenInputBox(!openInputBox);
-  };
-
-  // const handleSubFieldChange = (parentIndex, subIndex, key, value) => {
-  //   const copiedFields = [...fields];
-  //   copiedFields[parentIndex].subfields[subIndex][key] = value;
-  //   setFields(copiedFields); 
-  // };
 
   const addReport = () => {
     const id = crypto.randomUUID();
@@ -70,8 +55,6 @@ export default function TableWhole () {
                 fields={fields}
                 setFields={setFields}
                 field={field}
-                showInputBox={showInputBox}
-                setCurrent={setCurrent}
                 isSubitem={false}
               />
               { reports.map((report, reportIndex) => (
@@ -89,18 +72,9 @@ export default function TableWhole () {
         </tbody>
       </table>
       <div className="pos-left mb">
-        <button onClick={showInputBox}>{openInputBox ? 'Discard':'Add Field'}</button>
+        <button>Add Field</button>
         <button className="ml" onClick={addReport}>Add Report</button>
       </div>
-      { openInputBox && 
-        <ManageField 
-          onCloseBox={showInputBox} 
-          fields={fields} 
-          setFields={setFields} 
-          current={current}
-          setCurrent={setCurrent}
-        />
-      }
     </div>
   );
 };

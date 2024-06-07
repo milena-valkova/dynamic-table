@@ -1,54 +1,64 @@
 const useField = () => {
-  const emptyField = { id: null, name: "", nestmentLevel: 0, color: '#ffffff', verticalLevel: 0, items: [] };
-  const emptySubField = { id: null, name: "", nestmentLevel: 0, verticalLevel: 0, items: [] };
-  const emptyReport = {};
+  const formFieldInputs = [
+    { label: "Name: ", id: "name", type: "text" },
+    { label: "Color: ", id: "color", type: "color" },
+    { label: "Nestment Level: ", id: "nestmentLevel", type: "number" },
+    { label: "Vertical Level: ", id: "verticalLevel", type: "number" },
+  ];
 
-
-  const returnParent = (data, id) => {
-    for(var x = 0; x < data.length; x++){
-      if(data[x].id === id){
-        return data[x];
-      }
-      else{
-        if(data[x].items.length){
-          const item = returnParent(data[x].items, id);
-          return item;
-        }
-      }
-    }
-  }
-
-  const addSubItem = function (fields, current, item) {
-
-    const parentCopy = returnParent(fields, current.parentId);
-
-    if(parentCopy){
-      parentCopy.items.push({
-        id: crypto.randomUUID(),
+  const insertNode = (tree, fieldId, item) => {
+    if(tree.id === fieldId){
+      tree.items.push({
         ...item,
         items: [],
       });
 
-      return parentCopy;
+      return tree;
     }
 
-    // let latestItems = [];
-    // latestItems = fields.items?.map(obj => {
-    //   debugger;
-    //   return addSubItem(obj, current.parentId, item);
-    // });
+    let latestNode = [];
+    latestNode = tree.items.map(obj => {
+      return insertNode(obj, fieldId, item);
+    });
 
-    // return {...fields, items: latestItems}
+    return { ...tree, items: latestNode }
   };
 
-  const editSubItem = function (fields, current, item) {
+  const editNode = (tree, fieldId, item) => {
+    if(tree.id === fieldId){
+      for (var key in tree) {
+        if (tree.hasOwnProperty(key) && item.hasOwnProperty(key)) {
+          tree[key] = item[key];
+        }
+      }
+      return tree;
+    }
 
-    
+    tree.items.map(obj => {
+      return insertNode(obj, fieldId, item);
+    });
+
+    return { ...tree }
   };
 
-  const deleteSubItem = function (parent, fieldId) {};
+  const deleteNode = (tree, id) => {
 
-  return { emptyField, emptySubField, emptyReport, addSubItem, editSubItem, deleteSubItem }
+    for(let i = 0; i < tree.length; i++){
+      if(tree[i].id === id){
+        tree.splice(i, 1);
+
+        return tree;
+      }else{
+        if(tree[i].items.length){
+          deleteNode(tree[i].items, id);
+        }
+      }
+    }
+
+    return tree;
+  };
+
+  return {insertNode, editNode, deleteNode, formFieldInputs}
 }
 
 export default useField;
