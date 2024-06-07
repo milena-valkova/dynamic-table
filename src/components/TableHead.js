@@ -1,28 +1,15 @@
-export default function TableHead ({fields, reports, setReports, deleteReport, editableReportId, setEditableReportId}) {
-  
+import Action from "./Action";
 
-  const editReport = (id) => {
-    setEditableReportId(id);
-  };
-
-  const updateReport = (report) => {
-    setEditableReportId(null);
-  };
+export default function TableHead ({fields, reports, setReportsData, handleDeleteReport, editableReportId, setEditableReportId}) {
 
   return (
     <thead>
       <tr>
-        <th>{fields ? 'Field Name' : 'No fields yet'}</th>
+        <th>{fields.length ? 'Field Name' : 'No fields and reports yet'}</th>
         {reports?.map((current, index) => (
           <th key={index}>
             <span>Report #{index + 1}</span>
-            <button 
-              onClick={() => editableReportId ? updateReport(current) : editReport(current.id)} 
-              className='ml'
-            >
-              {editableReportId ? 'Save' : 'Edit'}
-            </button>
-            <button onClick={() => deleteReport(current.id)} className='ml'>Delete</button>
+            <Action handleClick={() => handleDeleteReport(current.id)} className='ml' name="Delete" />
           </th>
         ))}
       </tr>

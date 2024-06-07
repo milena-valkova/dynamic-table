@@ -30,20 +30,8 @@ const useItems = () => {
       }
     }
   };
-  
-  const updateField = (fields, current_id, updatedData) => {
-    return fields.reduce((array, field_item) => {
-      if (field_item.id === current_id) {
-        const modified_item = { ...field_item, ...updatedData };
-        array.push(modified_item);
-      } else {
-        array.push(field_item);
-      }
-      return array;
-    }, []);
-  };
 
-  const deleteItem = (items, current_id) => {
+  const deleteReport = (items, current_id) => {
     const element = items.find(field => field.id === current_id);
     const index = items.indexOf(element);
     const newArr = Array.from(items);
@@ -51,7 +39,7 @@ const useItems = () => {
     return newArr;
   }
 
-  return { updateItems, updateField, deleteItem }
+  return { updateItems, deleteReport }
 }
 
 export default useItems;

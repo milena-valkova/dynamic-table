@@ -6,7 +6,7 @@ const useStorage = () => {
 
   const returnStorage = (keyLabel) => {
     const stringArray = localStorage.getItem(keyLabel);
-    return JSON.parse(stringArray);
+    return stringArray.length ? JSON.parse(stringArray) : undefined;
   }
 
   return { updateStorage, returnStorage }

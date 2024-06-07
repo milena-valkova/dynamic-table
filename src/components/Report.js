@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-export default function Report ({field, reports, report, setReports, editableReportId, reportIndex}) {
+export default function Report ({field, reports, report, setReports, editableReport, reportIndex}) {
 
   const handleReportChange = (reportIndex, fieldName, value) => {
     const newReports = [...reports];
@@ -14,7 +14,7 @@ export default function Report ({field, reports, report, setReports, editableRep
 
   return (
     <td style={{textAlign: 'center'}} >
-      {editableReportId === report.id ? 
+      {editableReport === report.id ? 
         <input
           id={reportKey}
           name={reportKey}

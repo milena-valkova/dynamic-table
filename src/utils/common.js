@@ -1,4 +1,4 @@
-const setNewUuid = () => {
+export const setNewUuid = () => {
   return crypto.randomUUID();
 }
 
