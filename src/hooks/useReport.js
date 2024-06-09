@@ -60,7 +60,7 @@ const useReport = () => {
       const newItem = {
         fieldId: newField.id,
         id: setNewUuid(),
-        name: newField.name
+        name: 0
       };
       report[keyName] = newItem;
     }
@@ -74,7 +74,7 @@ const useReport = () => {
         const newItem = {
           fieldId: newField.id,
           id: setNewUuid(),
-          name: keyName
+          name: 0
         };
 
         report[key][keyName] = newItem;
