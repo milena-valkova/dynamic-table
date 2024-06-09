@@ -1,6 +1,16 @@
 import useReport from '../hooks/useReport';
 
-export default function Report ({field, reportsData, setReportsData, report, reportKey, parentReport, reportIndex, editReportMode, setEditReportMode, fieldsData}){
+export default function Report ({
+  field, 
+  reportsData, 
+  setReportsData, 
+  report, 
+  reportKey, 
+  reportIndex, 
+  editReportMode, 
+  setEditReportMode, 
+  fieldsData
+}){
   const { updateReport } = useReport();
 
   const handleReportUpdate = ( e ) => {
@@ -21,15 +31,32 @@ export default function Report ({field, reportsData, setReportsData, report, rep
     );
   }
 
+  const checkIfIsEditMode = (obj , id) =>{
+    if (obj.id === id) {
+      return true;
+    }
+  
+    for (const key in obj) {
+      if (typeof obj[key] === 'object' && obj[key]?.id) {
+        const found = checkIfIsEditMode(obj[key], id);
+        if (found) {
+          return true;
+        }
+      }
+    }
+  
+    return false;
+  }
+
   return (
   report[reportKey] && 
     <div className="flex-column">
       <div className="text-center mb">
-        {editReportMode?.id === parentReport.id ?
+        {editReportMode && checkIfIsEditMode(editReportMode, report?.[reportKey].id) ?
           <input
             id={reportKey}
             name={reportKey}
-            type="text"
+            type="number"
             defaultValue={report[reportKey]?.name || ''}
             onChange={handleReportUpdate}
           />
@@ -46,7 +73,6 @@ export default function Report ({field, reportsData, setReportsData, report, rep
             reportsData={reportsData}
             setReportsData={setReportsData}
             report={report[reportKey]}
-            parentReport={report}
             reportIndex={reportIndex}
             reportKey={key}
             editReportMode={editReportMode}

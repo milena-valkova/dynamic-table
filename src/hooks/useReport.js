@@ -7,7 +7,7 @@ const useReport = () => {
 
     fieldsData.forEach((field) => {
       const keyName = returnFieldKey(field.name);
-      tree[keyName] = {id: setNewUuid(), name: keyName, fieldId: field.id};
+      tree[keyName] = {id: setNewUuid(), name: 0, fieldId: field.id};
 
       if(field.items.length){
         Object.keys(tree[keyName]).forEach(() => {

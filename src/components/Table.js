@@ -10,16 +10,10 @@ import Action from './Action';
 import TableHead from './TableHead';
 
 // const fields = [
-//   { id: "mambojumbo1", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [] },
-//   { id: "mambojumbo2", name: "Costs", verticalLevel: 1, color: "#ff0000", nestmentLevel: 1, items: [] },
-//   { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 0, items: [] },
-// ];
-
-const fields = [
-{ id: "mambojumbo", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [
- { id: "mambojumbo2", name: "Costs", verticalLevel: 1, color: "#ff0000", nestmentLevel: 1, items: [] },
- { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 1, items: [] },
-]}];
+// { id: "mambojumbo", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [
+//  { id: "mambojumbo2", name: "Costs", verticalLevel: 1, color: "#ff0000", nestmentLevel: 1, items: [] },
+//  { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 1, items: [] },
+// ]}];
 
 
 export default function Table () {
@@ -29,7 +23,6 @@ export default function Table () {
 
   const [ fieldsData, setFieldsData ] = useState(returnStorage("fields") || []);
   const [ reportsData, setReportsData ] = useState(returnStorage("reports") ||[]);
-  // const [ reportsData, setReportsData ] = useState([]);
   const [ addField, setAddField ] = useState(false);
   const [ editReportMode, setEditReportMode ] = useState(null);
 
@@ -114,7 +107,6 @@ export default function Table () {
                   reportsData={reportsData}
                   setReportsData={setReportsData}
                   report={report}
-                  parentReport={report}
                   reportKey={reportKey}
                   reportIndex={reportIndex}
                   editReportMode={editReportMode}
@@ -127,7 +119,7 @@ export default function Table () {
         ))
         }
         <tr>
-          <td >
+          <td colSpan="2">
             { addField ?
               <form onSubmit={handleAddField} className='form'>
                 <h4>Add New Field</h4>
@@ -143,7 +135,7 @@ export default function Table () {
                 </div>
               </form>
               :
-              <div className='mt'>
+              <div className='mt buttons-row'>
                 <Action handleClick={() => setAddField(true)} name="Add Field"/>
                 <Action handleClick={handleInsertReport} className='ml' name="Add Report"/>
               </div>
