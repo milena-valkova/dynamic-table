@@ -1,29 +1,38 @@
-import { useMemo } from "react";
+export default function Report ({field, reportsData, report, parent = report, reportIndex, editReportMode, setEditReportMode}) {
+  const reportKey = field.name.toLowerCase().replace(" ","_");
 
-export default function Report ({field, reports, report, setReports, editableReport, reportIndex}) {
+  const handleReportChange = ( e ) => {
+    const newReports = [...reportsData];
+    // debugger;
+    newReports[reportIndex][reportKey] = e.target.value;
+  }
 
-  const handleReportChange = (reportIndex, fieldName, value) => {
-    const newReports = [...reports];
-    newReports[reportIndex][fieldName] = value;
-    setReports(newReports);
-  };
-  
-  const reportKey = useMemo(() => {
-    field.name.toLowerCase().replace(" ","_");
-  },[field]);
-
+  console.log(report);
   return (
-    <td style={{textAlign: 'center'}} >
-      {editableReport === report.id ? 
-        <input
-          id={reportKey}
-          name={reportKey}
-          type="text"
-          defaultValue={report[reportKey] || ''}
-          onChange={(e) => handleReportChange(reportIndex, field.name, e.target.value)}
+    <div className="flex-column">
+      <div className="text-center mb">
+        {editReportMode?.id === parent.id ? 
+          <input
+            id={reportKey}
+            name={reportKey}
+            type="text"
+            defaultValue={report[reportKey]?.name || ''}
+            onChange={handleReportChange}
+          />
+          : report[reportKey]?.name  
+        }
+      </div>
+      {report[reportKey]?.items.map((sub_report) => (
+        <Report key={sub_report.id} 
+          field={field} 
+          reportsData={reportsData}
+          report={sub_report}
+          parent={field}
+          reportIndex={reportIndex}
+          editReportMode={editReportMode}
+          setEditReportMode={setEditReportMode}
         />
-        : report[reportKey]   
-      }
-    </td>
+      ))}
+    </div>
   )
 }

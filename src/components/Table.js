@@ -29,9 +29,10 @@ export default function Table () {
   const { deleteReport } = useReport();
 
   const [ fieldsData, setFieldsData ] = useState(returnStorage("fields") || []);
-  const [ reportsData, setReportsData ] = useState(returnStorage("reports") || []);
+  const [ reportsData, setReportsData ] = useState(returnStorage("reports") ||[]);
+  // const [ reportsData, setReportsData ] = useState([]);
   const [ addField, setAddField ] = useState(false);
-  const [editableReport, setEditableReport] = useState(null);
+  const [editReportMode, setEditReportMode] = useState(null);
 
   // useEffect(() => {
   //   updateStorage("fields", fields)
@@ -53,64 +54,86 @@ export default function Table () {
 
     setTimeout(()=>{
       updateStorage("fields", fieldsData);
-    })
+    });
   };
 
   const handleDeleteReport = (id) => {
     const newReports = deleteReport(reportsData, id);
-    updateStorage("reports", newReports);
     setReportsData(newReports);
+    updateStorage("reports", newReports);
   };
 
   const handleInsertReport = () => {
     const id = setNewUuid();
     const newReport = {id};
     
-    fieldsData.forEach(field => {
+    fieldsData.forEach((field) => {
       let keyName = field.name.toLowerCase().replace(" ","_");
-      newReport[keyName] = 'moje';
-      field.items && field.items.forEach(subfield => {
-        newReport[subfield.name] = 'test';
+      newReport[keyName] = {id, name: "", items: []};
+
+      field.items && field.items.forEach(() => {
+        const subId = setNewUuid();
+        newReport[keyName].items.push({id: subId, name: "newSUb", items: []});
       });
     });
 
-    const reportsArray = [...reportsData, newReport]
+    const reportsArray = [...reportsData, newReport];
     setReportsData(reportsArray);
-    updateStorage("reports", reportsArray)
+    updateStorage("reports", reportsArray);
   };
+
+  const handleUpdateReport = (updatedItem) => { 
+    setReportsData((prevData) =>
+      prevData.map((item) =>
+        item.id === updatedItem.id ? updatedItem : item
+      )
+    );
+    setEditReportMode(null);
+
+    setTimeout(()=>{
+      updateStorage("reports", reportsData);
+    });
+    
+  }
 
   return (
     <table className='mb'>
       <TableHead 
         fields={fieldsData} 
-        reports={reportsData} 
-        setReports={setReportsData}
+        reports={reportsData}
         handleDeleteReport={handleDeleteReport} 
+        handleUpdateReport={handleUpdateReport}
+        editReportMode={editReportMode}
       />
       <tbody>
         {fieldsData.map(dataItem => (
           <tr key={dataItem.id} style={{backgroundColor: dataItem.color}}>
-            <Field 
-              field={dataItem} 
-              fields={fieldsData} 
-              handleUpdateField={handleUpdateFields} 
-              isSubitem={false}/>
+            <td>
+              <Field 
+                field={dataItem} 
+                fields={fieldsData} 
+                handleUpdateField={handleUpdateFields} 
+                isSubitem={false}
+              />
+            </td>
           
-          { reportsData.map((report, reportIndex) => (
-            <Report key={report.id} 
-              field={dataItem} 
-              reports={reportsData}
-              report={report} 
-              setReports={setReportsData} 
-              editableReport={editableReport}
-              reportIndex={reportIndex}
-            />
-          ))}
+            { reportsData.map((report, reportIndex) => (
+              <td key={report.id} onClick={()=>setEditReportMode(report)} style={{cursor: !editReportMode && 'pointer'}}>
+                <Report
+                  field={dataItem} 
+                  reportsData={reportsData}
+                  report={report} 
+                  reportIndex={reportIndex}
+                  editReportMode={editReportMode}
+                  setEditReportMode={setEditReportMode}
+                />
+              </td>
+            ))}
           </tr>
         ))
         }
         <tr>
-          <td>
+          <td >
             { addField ?
               <form onSubmit={handleAddField} className='form'>
                 <h4>Add New Field</h4>
@@ -126,10 +149,10 @@ export default function Table () {
                 </div>
               </form>
               :
-              <>
+              <div className='mt'>
                 <Action handleClick={() => setAddField(true)} name="Add Field"/>
                 <Action handleClick={handleInsertReport} className='ml' name="Add Report"/>
-              </>
+              </div>
             }
           </td>
         </tr>

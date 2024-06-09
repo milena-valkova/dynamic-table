@@ -27,8 +27,11 @@ tbody > tr:last-child {
 th, td {
   padding: .5rem;
   text-align: left;
-  border-left: 1px solid black;
   justify-content: space-between;
+}
+
+tr > td {
+  border-left: 1px solid black;
 }
 
 td:first-child {
@@ -67,6 +70,10 @@ td:first-child {
   display: flex ;
   margin-top: .5rem;
 }
+.flex-column{
+  display: flex;
+  flex-direction: column;
+}
 
 /* common styles */
 .pos-left{
@@ -75,9 +82,15 @@ td:first-child {
 .pos-left{
   text-align: left;
 }
+.text-center{
+  text-align: center;
+}
 .ml{
   margin-left: 1rem;
 }
 .mb{
   margin-bottom: 1rem;
+}
+.mt{
+  margin-top: 1rem;
 }

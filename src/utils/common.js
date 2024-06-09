@@ -7,7 +7,7 @@ export const returnNewItem = (event, field) => {
   const data = new FormData(event.currentTarget);
   const name = data.get('name');
   const verticalLevel = Number(data.get('verticalLevel'));
-  const color = field.color || data.get('color');
+  const color = field?.color || data.get('color');
   const nestmentLevel = Number(data.get('nestmentLevel'));
   const id = setNewUuid();
   return {id, name, verticalLevel, color, nestmentLevel, items:[]};

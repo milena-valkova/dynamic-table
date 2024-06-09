@@ -2,7 +2,7 @@ import { Fragment, useState } from "react";
 import { returnNewItem, returnUpdatedItem } from '../utils/common';
 import useField from '../hooks/useField';
 import Action from "./Action";
-import Input from "./Input";
+import FormInput from "./FormInput";
 
 export default function Field ({field, fields, handleUpdateField, isSubitem}) {
   const { insertNode, editNode, deleteNode, formFieldInputs } = useField();
@@ -57,8 +57,8 @@ export default function Field ({field, fields, handleUpdateField, isSubitem}) {
   }
 
   return ( 
-    <td style={{paddingLeft: `${16+(15 * field.nestmentLevel)}px`, display: "flex", flexDirection: "column" }}>
-      <div>
+    <div style={{paddingLeft: `${16+(15 * field.nestmentLevel)}px`}} className="flex-column">
+      <div className="mb">
         <span>{field.name}</span>
         {(!editMode || !showInput) && <span onClick={() => setExpand(!expand)} className="ml mb">{!expand ? "▼" : "▲"}</span>}
         {expand &&
@@ -84,13 +84,13 @@ export default function Field ({field, fields, handleUpdateField, isSubitem}) {
               return <Fragment key={item.id}>
                 {
                   (isSubitem && item.id !== "color") ?
-                    <Input key={item.id} {...props} disabled={isSubitem && item.id === "color" && !editMode}/>
+                    <FormInput key={item.id} {...props} disabled={isSubitem && item.id === "color" && !editMode}/>
                   :
                   (!isSubitem && showInput) ?
-                    <Input key={item.id} {...props} disabled={!isSubitem && item.id === "color" && !editMode}/>
+                    <FormInput key={item.id} {...props} disabled={!isSubitem && item.id === "color" && !editMode}/>
                     :
                     (!isSubitem && editMode) &&
-                    <Input key={item.id} {...props} disabled={false}/>
+                    <FormInput key={item.id} {...props} disabled={false}/>
                 }
               </Fragment>
             })}
@@ -109,6 +109,6 @@ export default function Field ({field, fields, handleUpdateField, isSubitem}) {
           />
         ))}
       </>
-    </td>
+    </div>
   )
 };

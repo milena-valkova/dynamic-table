@@ -1,4 +1,4 @@
-const Input = ({item, field, editMode, disabled}) => {
+const FormInput = ({item, field, editMode, disabled}) => {
   const isColor = item.id === "color";
   return (
     <p key={item.id}>
@@ -8,4 +8,4 @@ const Input = ({item, field, editMode, disabled}) => {
   )
 }
 
-export default Input;
+export default FormInput;
