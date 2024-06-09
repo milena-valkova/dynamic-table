@@ -27,6 +27,7 @@ th, td {
   padding: .5rem;
   text-align: left;
   justify-content: space-between;
+  min-width: 185px;
 }
 
 tr > td, 
@@ -43,6 +44,10 @@ td:first-child {
 .form {
   padding: 1rem;
   background-color: #F9F9F9;
+  position: fixed;
+  bottom: 10px;
+  left: 8px;
+  border: 2px solid black;
 }
 
 .fixed-box {

@@ -1,12 +1,12 @@
 
-import { setNewUuid } from '../utils/common';
+import { setNewUuid, returnFieldKey } from '../utils/common';
 
 const useReport = () => {
 
   const insertReport = (fieldsData, tree) => {
 
-    fieldsData.forEach((field, index) => {
-      const keyName = field.name.toLowerCase().replace(" ","_");
+    fieldsData.forEach((field) => {
+      const keyName = returnFieldKey(field.name);
       tree[keyName] = {id: setNewUuid(), name: keyName, fieldId: field.id};
 
       if(field.items.length){
@@ -23,7 +23,7 @@ const useReport = () => {
 
   const updateReport = (fieldsData, tree, currentId, newValue) => {
     fieldsData.forEach((field) => {
-      const keyName = field.name.toLowerCase().replace(" ","_");
+      const keyName = returnFieldKey(field.name);
 
       if(tree[keyName]?.id === currentId){
         tree[keyName] = {...tree[keyName], name: newValue};
@@ -56,7 +56,7 @@ const useReport = () => {
 
   const updateAllReports = (reportsData, newField) => {
     reportsData.forEach(report => {
-      const keyName = newField.name.toLowerCase().replace(" ","_");
+      const keyName = returnFieldKey(newField.name);
       const newItem = {
         fieldId: newField.id,
         id: setNewUuid(),
@@ -67,24 +67,36 @@ const useReport = () => {
   )}
 
   const updateCorrespondingSubReports = (report, fieldId, newField) => {
-    const keyName = newField.name.toLowerCase().replace(" ","_");
+    const keyName = returnFieldKey(newField.name);
     
     Object.keys(report).forEach(key=> {
       if (report[key].fieldId === fieldId) {
-
         const newItem = {
           fieldId: newField.id,
           id: setNewUuid(),
           name: keyName
         };
 
-        report[keyName] = newItem;
+        report[key][keyName] = newItem;
 
-        if (newField.items) {
-          updateCorrespondingSubReports(report[key], fieldId, newField);
-        }
       } else if (typeof report[key] === 'object' && report[key].id) {
         updateCorrespondingSubReports(report[key], fieldId, newField);
+      }
+    });
+
+    return report;
+  }
+
+  const updateReportTree = (report, fieldId, newField, oldKey) => {
+    const keyName = returnFieldKey(newField.name);
+    
+    Object.keys(report).forEach(key=> {
+      if (report[key].fieldId === fieldId && oldKey !== keyName) {
+        report[keyName] = {...report[oldKey]};
+        delete report[oldKey];
+
+      } else if (typeof report[key] === 'object' && report[key].id) {
+        updateReportTree(report[key], fieldId, newField, oldKey);
       }
     });
 
@@ -105,7 +117,8 @@ const useReport = () => {
     deleteReport,
     deleteCorrespondingReport, 
     updateAllReports, 
-    updateCorrespondingSubReports 
+    updateCorrespondingSubReports,
+    updateReportTree
   }
 }
 

@@ -8,32 +8,29 @@ import FormInput from "./FormInput";
 
 export default function Field ({field, fields, reports, setReports, handleUpdateField, isSubitem}) {
   const { insertField, editField, deleteField, formFieldInputs } = useField();
-  const { deleteCorrespondingReport, updateCorrespondingSubReports } = useReport();
+  const { deleteCorrespondingReport, updateCorrespondingSubReports, updateReportTree } = useReport();
   const { updateStorage } = useStorage();
 
   const [ expand, setExpand ] = useState(false);
   const [ editMode, setEditMode ] = useState(false);
   const [ showInput, setShowInput ] = useState(false);
 
-  const keyName = field.name.toLowerCase().replace(" ","_");
+  const onChangeReportsAccordingly = (reports, currentId, newItem, oldKey) => {
+    const reportsCopy = [...reports];
 
-  // const onChangeFieldReports = (reports, currentId, newItem, oldKey) => {
-  //   const reportsCopy = [...reports];
-  //   reportsCopy.forEach(report => {
-  //     updateCorrespondingSubReports(report[oldKey ? oldKey : keyName], currentId, newItem, keyName);
-  //   });
-  //   debugger;
-  //   setReports(reportsCopy);
-  //   updateStorage("reports", reportsCopy);
-  // }
+    reportsCopy.forEach(report => {
+      updateReportTree(report, currentId, newItem, oldKey);
+    });
+    setReports(reportsCopy);
+    updateStorage("reports", reportsCopy);
+  }
 
   const handleUpdate = (currentId, value) => {
-    console.log("old: ", field.name)
     const oldKey = field.name.toLowerCase().replace(" ","_");
 
     const finalStructure = editField(field, currentId, value);
     handleUpdateField(finalStructure);
-    // onChangeFieldReports(reports, currentId, finalStructure, oldKey);
+    onChangeReportsAccordingly (reports, currentId, finalStructure, oldKey);
   }
 
   const handleDelete = (currentId) => {
@@ -100,7 +97,6 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
                 setEditMode(true);
                 setShowInput(true);
               }} name="Edit"/>
-              {/* On Delete its better to have modal with message confirmation */}
               <Action handleClick={()=>handleDelete(field.id)} className='ml' name="Delete"/>
               <Action handleClick={handleAddSubField} className='ml' name="Add Subfield"/>
             </div>
@@ -109,7 +105,7 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
       </div>
       <>
         { (showInput || editMode) && 
-          <form onSubmit={editMode ? handleEdit : handleSubmit} method='post' style={{backgroundColor: "linen", padding: '1rem', marginTop: '1rem'}}>
+          <form onSubmit={editMode ? handleEdit : handleSubmit} method='post' className="form">
             <h4 className="text-center">{editMode ? 'Edit' : 'Add SubField'}</h4>
             {formFieldInputs.map((item) => {
               const props = {item, field, editMode, showInput};

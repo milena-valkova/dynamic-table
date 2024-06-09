@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import useField from '../hooks/useField';
 import useStorage from '../hooks/useStorage';
 import useReport from '../hooks/useReport';
-import { returnNewItem, setNewUuid } from '../utils/common';
+import { returnNewItem, setNewUuid, returnFieldKey } from '../utils/common';
 
 import Field from './Field';
 import Report from './Report';
@@ -107,7 +107,7 @@ export default function Table () {
             </td>
           
             { reportsData.map((report, reportIndex) => {
-              const reportKey = dataItem.name.toLowerCase().replace(" ","_");
+              const reportKey = returnFieldKey(dataItem.name);
               return <td key={report.id} onClick={()=>setEditReportMode(report)} style={{cursor: !editReportMode && 'pointer'}}>
                 <Report
                   field={dataItem} 

@@ -2,6 +2,10 @@ export const setNewUuid = () => {
   return crypto.randomUUID();
 }
 
+export const returnFieldKey = (name) => {
+  return name.toLowerCase().replace(/\s+/g,"_");
+} 
+
 export const returnNewItem = (event, field) => {
   event.preventDefault();
   const data = new FormData(event.currentTarget);
