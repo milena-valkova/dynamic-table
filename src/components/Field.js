@@ -1,29 +1,41 @@
 import { Fragment, useState } from "react";
 import { returnNewItem, returnUpdatedItem } from '../utils/common';
 import useField from '../hooks/useField';
+import useReport from '../hooks/useReport';
+import useStorage from '../hooks/useStorage';
 import Action from "./Action";
 import FormInput from "./FormInput";
 
-export default function Field ({field, fields, handleUpdateField, isSubitem}) {
-  const { insertNode, editNode, deleteNode, formFieldInputs } = useField();
+export default function Field ({field, fields, reports, setReports, handleUpdateField, isSubitem}) {
+  const { insertField, editField, deleteField, formFieldInputs } = useField();
+  const { deleteCorrespondingReport } = useReport();
+  const { updateStorage } = useStorage();
+
   const [ expand, setExpand ] = useState(false);
   const [ editMode, setEditMode ] = useState(false);
   const [ showInput, setShowInput ] = useState(false);
 
-  const handleInsertNode = (currentId, newItem) => {
-    const finalStructure = insertNode(field, currentId, newItem);
+  const handleAdd = (currentId, newItem) => {
+    const finalStructure = insertField(field, currentId, newItem);
     handleUpdateField(finalStructure);
   }
 
-  const handleEditNode = (currentId, value) => {
-    const finalStructure = editNode(field, currentId, value);
+  const handleUpdate = (currentId, value) => {
+    const finalStructure = editField(field, currentId, value);
     handleUpdateField(finalStructure);
   }
 
-  const handleDeleteNode = (currentId) => {
-    const finalStructure = deleteNode(fields, currentId);
+  const handleDelete = (currentId) => {
+    const finalStructure = deleteField(fields, currentId);
     const temp = {...finalStructure};
     handleUpdateField(temp);
+
+    const reportsCopy = [...reports];
+    reportsCopy.forEach(report => 
+      deleteCorrespondingReport(report, currentId)
+    );
+    setReports(reportsCopy);
+    updateStorage("reports", reportsCopy);
   } 
 
   const handleCancel = () => {
@@ -34,22 +46,18 @@ export default function Field ({field, fields, handleUpdateField, isSubitem}) {
   const handleSubmit = (event) => {
     const newItem = returnNewItem(event, field);
 
-    handleInsertNode(field.id, newItem);
+    handleAdd(field.id, newItem);
     setShowInput(false);
     setExpand(false);
   }
 
   const handleEdit = (event) => {
     const updatedPart = isSubitem ? returnUpdatedItem(event, isSubitem, field) : returnUpdatedItem(event, isSubitem);
-    handleEditNode(field.id, updatedPart)
+    handleUpdate(field.id, updatedPart)
     setEditMode(false);
     setShowInput(false);
     setExpand(false);
   }
-
-  const handleDelete = () => {
-    handleDeleteNode(field.id);
-  };
 
   const handleNewField = () => {
     setEditMode(false);
@@ -69,7 +77,7 @@ export default function Field ({field, fields, handleUpdateField, isSubitem}) {
                 setShowInput(true);
               }} name="Edit"/>
               {/* On Delete its better to have modal with message confirmation */}
-              <Action handleClick={handleDelete} className='ml' name="Delete"/>
+              <Action handleClick={()=>handleDelete(field.id)} className='ml' name="Delete"/>
               <Action handleClick={handleNewField} className='ml' name="Add Subfield"/>
             </div>
           )
@@ -104,6 +112,8 @@ export default function Field ({field, fields, handleUpdateField, isSubitem}) {
           <Field key={sub_field.id}
             field={sub_field}
             fields={fields}
+            reports={reports}
+            setReports={setReports}
             handleUpdateField={handleUpdateField}
             isSubitem={true}
           />

@@ -7,7 +7,7 @@ const useReport = () => {
 
     fieldsData.forEach((field) => {
       const keyName = field.name.toLowerCase().replace(" ","_");
-      tree[keyName] = {id: setNewUuid(), name: keyName};
+      tree[keyName] = {id: setNewUuid(), name: keyName, fieldId: field.id};
 
       if(field.items.length){
         Object.keys(tree[keyName]).forEach(() => {
@@ -41,6 +41,19 @@ const useReport = () => {
     return { ...tree }
   }
 
+  const deleteCorrespondingReport = (report, fieldId) => {
+
+    Object.keys(report).forEach(key=>{
+      if (report[key].fieldId === fieldId) {
+        delete report[key];
+      } else if (typeof report[key] === 'object' && report[key].id) {
+        deleteCorrespondingReport(report[key], fieldId);
+      }
+    });
+
+    return report;
+  }
+
   const deleteReport = (items, current_id) => {
     const element = items.find(field => field.id === current_id);
     const index = items.indexOf(element);
@@ -49,7 +62,7 @@ const useReport = () => {
     return newArr;
   }
 
-  return { insertReport, updateReport, deleteReport }
+  return { insertReport, updateReport, deleteReport, deleteCorrespondingReport }
 }
 
 export default useReport;

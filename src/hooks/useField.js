@@ -6,7 +6,7 @@ const useField = () => {
     { label: "Vertical Level: ", id: "verticalLevel", type: "number" },
   ];
 
-  const insertNode = (tree, fieldId, item) => {
+  const insertField = (tree, fieldId, item) => {
     if(tree.id === fieldId){
       tree.items.push({
         ...item,
@@ -18,13 +18,13 @@ const useField = () => {
 
     let latestNode = [];
     latestNode = tree.items.map(obj => {
-      return insertNode(obj, fieldId, item);
+      return insertField(obj, fieldId, item);
     });
 
     return { ...tree, items: latestNode }
   };
 
-  const editNode = (tree, fieldId, item) => {
+  const editField = (tree, fieldId, item) => {
     if(tree.id === fieldId){
       for (var key in tree) {
         if (tree.hasOwnProperty(key) && item.hasOwnProperty(key)) {
@@ -35,13 +35,13 @@ const useField = () => {
     }
 
     tree.items.map(obj => {
-      return editNode(obj, fieldId, item);
+      return editField(obj, fieldId, item);
     });
 
     return { ...tree }
   };
 
-  const deleteNode = (tree, id) => {
+  const deleteField = (tree, id) => {
 
     for(let i = 0; i < tree.length; i++){
       if(tree[i].id === id){
@@ -50,7 +50,7 @@ const useField = () => {
         return tree;
       }else{
         if(tree[i].items.length){
-          deleteNode(tree[i].items, id);
+          deleteField(tree[i].items, id);
         }
       }
     }
@@ -58,7 +58,7 @@ const useField = () => {
     return tree;
   };
 
-  return {insertNode, editNode, deleteNode, formFieldInputs}
+  return {insertField, editField, deleteField, formFieldInputs}
 }
 
 export default useField;

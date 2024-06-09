@@ -10,14 +10,13 @@ import Action from './Action';
 import TableHead from './TableHead';
 
 // const fields = [
-//   { id: "mambojumbo", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [] },
+//   { id: "mambojumbo1", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [] },
 //   { id: "mambojumbo2", name: "Costs", verticalLevel: 1, color: "#ff0000", nestmentLevel: 1, items: [] },
 //   { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 0, items: [] },
 // ];
 
 // const fields = [
 // { id: "mambojumbo", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [
-//  { id: "mambojumbo1", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [] },
 //  { id: "mambojumbo2", name: "Costs", verticalLevel: 1, color: "#ff0000", nestmentLevel: 1, items: [] },
 //  { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 1, items: [] },
 // ]}];
@@ -64,7 +63,6 @@ export default function Table () {
   };
 
   const handleInsertReport = () => {
-
     const newReport = {id: setNewUuid()}
 
     const temp = insertReport(fieldsData, newReport);
@@ -72,22 +70,6 @@ export default function Table () {
     setReportsData(reportsArray);
     updateStorage("reports", reportsArray);
   };
-
-  const handleUpdateReport = (updatedItem) => { 
-    const temp = Object.keys(reportsData[0]).map(key => {
-      const reporTemp = reportsData[0][key];
-      if(reporTemp?.id === updatedItem.id){
-        return updatedItem
-      }
-      return reporTemp;
-    })
-
-    setReportsData((prevData) => 
-      prevData.map((item) => 
-        item.id === temp.id ? temp : item 
-      )
-    );
-  }
 
   const onSaveReport = () => {
     setEditReportMode(null);
@@ -113,6 +95,8 @@ export default function Table () {
               <Field 
                 field={dataItem} 
                 fields={fieldsData} 
+                reports={reportsData}
+                setReports={setReportsData}
                 handleUpdateField={handleUpdateFields} 
                 isSubitem={false}
               />
@@ -123,7 +107,8 @@ export default function Table () {
               return <td key={report.id} onClick={()=>setEditReportMode(report)} style={{cursor: !editReportMode && 'pointer'}}>
                 <Report
                   field={dataItem} 
-                  handleUpdateReport={handleUpdateReport}
+                  reportsData={reportsData}
+                  setReportsData={setReportsData}
                   report={report}
                   parentReport={report}
                   reportKey={reportKey}
