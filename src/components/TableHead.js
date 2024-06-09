@@ -1,6 +1,6 @@
 import Action from "./Action";
 
-export default function TableHead ({fields, reports, handleDeleteReport, handleUpdateReport, editReportMode}) {
+export default function TableHead ({fields, reports, handleDeleteReport, onSaveReport, editReportMode}) {
 
   return (
     <thead>
@@ -10,7 +10,7 @@ export default function TableHead ({fields, reports, handleDeleteReport, handleU
           <th key={index}>
             <span>Report #{index + 1}</span>
             { editReportMode?.id === current.id ? 
-              <Action handleClick={() => handleUpdateReport(editReportMode)} className="ml" name="Save"/>
+              <Action handleClick={() => onSaveReport(editReportMode)} className="ml" name="Save"/>
               :
               <Action handleClick={() => handleDeleteReport(current.id)} className='ml' name="Delete" />
             }

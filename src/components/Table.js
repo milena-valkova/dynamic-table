@@ -26,13 +26,13 @@ import TableHead from './TableHead';
 export default function Table () {
   const { updateStorage, returnStorage } = useStorage();
   const { formFieldInputs } = useField();
-  const { deleteReport } = useReport();
+  const { insertReport, deleteReport } = useReport();
 
   const [ fieldsData, setFieldsData ] = useState(returnStorage("fields") || []);
   const [ reportsData, setReportsData ] = useState(returnStorage("reports") ||[]);
   // const [ reportsData, setReportsData ] = useState([]);
   const [ addField, setAddField ] = useState(false);
-  const [editReportMode, setEditReportMode] = useState(null);
+  const [ editReportMode, setEditReportMode ] = useState(null);
 
   // useEffect(() => {
   //   updateStorage("fields", fields)
@@ -64,36 +64,37 @@ export default function Table () {
   };
 
   const handleInsertReport = () => {
-    const id = setNewUuid();
-    const newReport = {id};
-    
-    fieldsData.forEach((field) => {
-      let keyName = field.name.toLowerCase().replace(" ","_");
-      newReport[keyName] = {id, name: "", items: []};
 
-      field.items && field.items.forEach(() => {
-        const subId = setNewUuid();
-        newReport[keyName].items.push({id: subId, name: "newSUb", items: []});
-      });
-    });
+    const newReport = {id: setNewUuid()}
 
-    const reportsArray = [...reportsData, newReport];
+    const temp = insertReport(fieldsData, newReport);
+    const reportsArray = [...reportsData, temp];
     setReportsData(reportsArray);
     updateStorage("reports", reportsArray);
   };
 
   const handleUpdateReport = (updatedItem) => { 
-    setReportsData((prevData) =>
-      prevData.map((item) =>
-        item.id === updatedItem.id ? updatedItem : item
+    const temp = Object.keys(reportsData[0]).map(key => {
+      const reporTemp = reportsData[0][key];
+      if(reporTemp?.id === updatedItem.id){
+        return updatedItem
+      }
+      return reporTemp;
+    })
+
+    setReportsData((prevData) => 
+      prevData.map((item) => 
+        item.id === temp.id ? temp : item 
       )
     );
+  }
+
+  const onSaveReport = () => {
     setEditReportMode(null);
 
     setTimeout(()=>{
       updateStorage("reports", reportsData);
     });
-    
   }
 
   return (
@@ -102,7 +103,7 @@ export default function Table () {
         fields={fieldsData} 
         reports={reportsData}
         handleDeleteReport={handleDeleteReport} 
-        handleUpdateReport={handleUpdateReport}
+        onSaveReport={onSaveReport}
         editReportMode={editReportMode}
       />
       <tbody>
@@ -117,18 +118,23 @@ export default function Table () {
               />
             </td>
           
-            { reportsData.map((report, reportIndex) => (
-              <td key={report.id} onClick={()=>setEditReportMode(report)} style={{cursor: !editReportMode && 'pointer'}}>
+            { reportsData.map((report, reportIndex) => {
+              const reportKey = dataItem.name.toLowerCase().replace(" ","_");
+              return <td key={report.id} onClick={()=>setEditReportMode(report)} style={{cursor: !editReportMode && 'pointer'}}>
                 <Report
                   field={dataItem} 
-                  reportsData={reportsData}
-                  report={report} 
+                  handleUpdateReport={handleUpdateReport}
+                  report={report}
+                  parentReport={report}
+                  reportKey={reportKey}
                   reportIndex={reportIndex}
                   editReportMode={editReportMode}
                   setEditReportMode={setEditReportMode}
+                  isSubfield={false}
+                  fieldsData={fieldsData}
                 />
               </td>
-            ))}
+            })}
           </tr>
         ))
         }

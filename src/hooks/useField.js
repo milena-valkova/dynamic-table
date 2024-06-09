@@ -35,7 +35,7 @@ const useField = () => {
     }
 
     tree.items.map(obj => {
-      return insertNode(obj, fieldId, item);
+      return editNode(obj, fieldId, item);
     });
 
     return { ...tree }

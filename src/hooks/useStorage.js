@@ -5,8 +5,12 @@ const useStorage = () => {
   }
 
   const returnStorage = (keyLabel) => {
-    const stringArray = localStorage.getItem(keyLabel);
-    return stringArray.length ? JSON.parse(stringArray) : undefined;
+    const result = JSON.parse(localStorage.getItem(keyLabel));
+
+    const collator = new Intl.Collator('en', { sensitivity: 'base' });
+    result?.sort((a, b) => collator.compare(a.verticalLevel, b.verticalLevel));
+
+    return result.length ? result : undefined;
   }
 
   return { updateStorage, returnStorage }

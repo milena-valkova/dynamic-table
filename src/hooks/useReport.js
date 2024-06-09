@@ -1,35 +1,45 @@
-const useItems = () => {
-  
-  const reduceItems = (items, current_id, updatedData) => {
-    return items.reduce((array, field_item) => {
-      if (field_item.id === current_id) {
-        const modified_item = { ...field_item, ...updatedData };
-        array.push(modified_item);
-      } else {
-        array.push(field_item);
+
+import { setNewUuid } from '../utils/common';
+
+const useReport = () => {
+
+  const insertReport = (fieldsData, tree) => {
+
+    fieldsData.forEach((field) => {
+      const keyName = field.name.toLowerCase().replace(" ","_");
+      tree[keyName] = {id: setNewUuid(), name: keyName};
+
+      if(field.items.length){
+        Object.keys(tree[keyName]).forEach(() => {
+          return insertReport(field.items, tree[keyName]);
+        });
+
+        return { ...tree }
       }
-      return array;
-    }, []);
+    });
+    
+    return { ...tree }
   }
 
-  const updateItems = (data, current_id, updatedData) => {
-    for(var x = 0; x < data.length; x++){
-      if(data[x].id === current_id){
-        const newArr = reduceItems(data[x].items, current_id, updatedData);
-        data[x].items = [...newArr];
-        debugger;
-        return data;
+  const updateReport = (fieldsData, tree, currentId, newValue) => {
+    fieldsData.forEach((field) => {
+      const keyName = field.name.toLowerCase().replace(" ","_");
+
+      if(tree[keyName]?.id === currentId){
+        tree[keyName] = {...tree[keyName], name: newValue};
       }
-      else{
-        if(data[x].items.length){
-          debugger;
-          const dataNew = updateItems(data[x].items, current_id, updatedData);
-          data[x].items = [...dataNew];
-          return data
-        }
+  
+      if(field.items.length){
+        Object.keys(tree).forEach(() => {
+          return updateReport(field.items, tree, currentId, newValue);
+        });
+
+        return { ...tree }
       }
-    }
-  };
+    });
+
+    return { ...tree }
+  }
 
   const deleteReport = (items, current_id) => {
     const element = items.find(field => field.id === current_id);
@@ -39,7 +49,7 @@ const useItems = () => {
     return newArr;
   }
 
-  return { updateItems, deleteReport }
+  return { insertReport, updateReport, deleteReport }
 }
 
-export default useItems;
+export default useReport;

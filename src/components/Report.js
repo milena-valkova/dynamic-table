@@ -1,38 +1,45 @@
-export default function Report ({field, reportsData, report, parent = report, reportIndex, editReportMode, setEditReportMode}) {
-  const reportKey = field.name.toLowerCase().replace(" ","_");
+import useReport from '../hooks/useReport';
 
-  const handleReportChange = ( e ) => {
-    const newReports = [...reportsData];
-    // debugger;
-    newReports[reportIndex][reportKey] = e.target.value;
+export default function Report ({field, handleUpdateReport, report, reportKey, parentReport, reportIndex, editReportMode, setEditReportMode, fieldsData, isSubfield}){
+  const { updateReport } = useReport();
+
+  const handleReportUpdate = ( e ) => {
+    const newTree = updateReport(fieldsData, report, report[reportKey].id, e.target.value);
+    handleUpdateReport(newTree);
   }
 
-  console.log(report);
   return (
     <div className="flex-column">
       <div className="text-center mb">
-        {editReportMode?.id === parent.id ? 
+        {editReportMode?.id === parentReport.id || editReportMode?.id && isSubfield ? 
           <input
             id={reportKey}
             name={reportKey}
             type="text"
-            defaultValue={report[reportKey]?.name || ''}
-            onChange={handleReportChange}
+            defaultValue={report[reportKey].name || ''}
+            onChange={handleReportUpdate}
           />
-          : report[reportKey]?.name  
+          : report[reportKey].name  
         }
       </div>
-      {report[reportKey]?.items.map((sub_report) => (
-        <Report key={sub_report.id} 
-          field={field} 
-          reportsData={reportsData}
-          report={sub_report}
-          parent={field}
-          reportIndex={reportIndex}
-          editReportMode={editReportMode}
-          setEditReportMode={setEditReportMode}
-        />
-      ))}
+      
+      {Object.keys(report[reportKey]).map((key) => {
+        const sub_report = report[reportKey][key];
+        return sub_report?.id  &&
+        ( <Report 
+            key={sub_report.id} 
+            field={field} 
+            handleUpdateReport={handleUpdateReport}
+            report={report[reportKey]}
+            parentReport={report}
+            reportIndex={reportIndex}
+            reportKey={key}
+            editReportMode={editReportMode}
+            setEditReportMode={setEditReportMode}
+            isSubfield={true}
+            fieldsData={fieldsData}
+        />);
+      })}
     </div>
   )
 }
