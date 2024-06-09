@@ -54,6 +54,56 @@ const useReport = () => {
     return report;
   }
 
+  const updateAllReports = (reportsData, newField) => {
+    reportsData.forEach(report => {
+      const keyName = newField.name.toLowerCase().replace(" ","_");
+      const newItem = {
+        fieldId: newField.id,
+        id: setNewUuid(),
+        name: newField.name
+      };
+      report[keyName] = newItem;
+    }
+  )}
+
+  const updateCorrespondingReport = (reportsData, newField) => {
+    reportsData.forEach(report => {
+      const keyName = newField.name.toLowerCase().replace(" ","_");
+      const newItem = {
+        fieldId: newField.id,
+        id: setNewUuid(),
+        name: newField.name
+      };
+      report[keyName] = newItem;
+    }
+  )}
+        // if (report.id === fieldId) {
+        //   // Add the new item to the report
+        //   const newItem = {
+        //     fieldId: newField.id,
+        //     id: setNewUuid(),
+        //     name: newField.name
+        //   };
+  
+        //   report[keyName] = newItem;
+  
+          // If the report has nested items, update them recursively
+          // if (newField.items) {
+          //   updateCorrespondingReport(reportsData, newField.id);
+          // }
+        // } 
+        // else if (report[keyName]) {
+        //   // If the report already has an item with the same name, update its fieldId
+        //   report[keyName].fieldId = newField.id;
+  
+        //   // If the report has nested items, update them recursively
+        //   if (newField.items) {
+        //     updateCorrespondingReport(reportsData, newField.id);
+        //   }
+        // }
+      // });
+  // }
+
   const deleteReport = (items, current_id) => {
     const element = items.find(field => field.id === current_id);
     const index = items.indexOf(element);
@@ -62,7 +112,7 @@ const useReport = () => {
     return newArr;
   }
 
-  return { insertReport, updateReport, deleteReport, deleteCorrespondingReport }
+  return { insertReport, updateReport, deleteReport, deleteCorrespondingReport, updateAllReports, updateCorrespondingReport }
 }
 
 export default useReport;

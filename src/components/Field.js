@@ -18,6 +18,7 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
   const handleAdd = (currentId, newItem) => {
     const finalStructure = insertField(field, currentId, newItem);
     handleUpdateField(finalStructure);
+
   }
 
   const handleUpdate = (currentId, value) => {
@@ -59,13 +60,13 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
     setExpand(false);
   }
 
-  const handleNewField = () => {
+  const handleAddSubField = () => {
     setEditMode(false);
     setShowInput(true);
   }
 
   return ( 
-    <div style={{paddingLeft: `${16+(15 * field.nestmentLevel)}px`}} className="flex-column">
+    field && <div style={{paddingLeft: `${16+(15 * field.nestmentLevel)}px`}} className="flex-column">
       <div className="mb">
         <span>{field.name}</span>
         {(!editMode || !showInput) && <span onClick={() => setExpand(!expand)} className="ml mb">{!expand ? "▼" : "▲"}</span>}
@@ -78,7 +79,7 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
               }} name="Edit"/>
               {/* On Delete its better to have modal with message confirmation */}
               <Action handleClick={()=>handleDelete(field.id)} className='ml' name="Delete"/>
-              <Action handleClick={handleNewField} className='ml' name="Add Subfield"/>
+              <Action handleClick={handleAddSubField} className='ml' name="Add Subfield"/>
             </div>
           )
         }

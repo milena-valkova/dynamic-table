@@ -25,7 +25,7 @@ import TableHead from './TableHead';
 export default function Table () {
   const { updateStorage, returnStorage } = useStorage();
   const { formFieldInputs } = useField();
-  const { insertReport, deleteReport } = useReport();
+  const { insertReport, deleteReport, updateAllReports } = useReport();
 
   const [ fieldsData, setFieldsData ] = useState(returnStorage("fields") || []);
   const [ reportsData, setReportsData ] = useState(returnStorage("reports") ||[]);
@@ -39,9 +39,12 @@ export default function Table () {
 
   const handleAddField = (event) => { 
     const newItem = returnNewItem(event);
-    setFieldsData([...fieldsData, newItem]);
-    updateStorage("fields", [...fieldsData, newItem])
+    const temp = [...fieldsData, newItem];
+    setFieldsData(temp);
+    updateStorage("fields", temp);
     setAddField(false);
+
+    updateAllReports(reportsData, newItem);
   }
 
   const handleUpdateFields = (updatedItem) => {

@@ -22,17 +22,19 @@ export default function Report ({field, reportsData, setReportsData, report, rep
   }
 
   return (
+  report[reportKey] && 
     <div className="flex-column">
       <div className="text-center mb">
-        {editReportMode?.id === parentReport.id || editReportMode?.id && isSubfield ? 
+        {editReportMode?.id === parentReport.id ?
+        //  || editReportMode?.id && isSubfield ?
           <input
             id={reportKey}
             name={reportKey}
             type="text"
-            defaultValue={report[reportKey].name || ''}
+            defaultValue={report[reportKey]?.name || ''}
             onChange={handleReportUpdate}
           />
-          : report[reportKey].name  
+          : report[reportKey].name
         }
       </div>
       
