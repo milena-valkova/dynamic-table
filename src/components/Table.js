@@ -15,11 +15,11 @@ import TableHead from './TableHead';
 //   { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 0, items: [] },
 // ];
 
-// const fields = [
-// { id: "mambojumbo", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [
-//  { id: "mambojumbo2", name: "Costs", verticalLevel: 1, color: "#ff0000", nestmentLevel: 1, items: [] },
-//  { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 1, items: [] },
-// ]}];
+const fields = [
+{ id: "mambojumbo", name: "Sales", verticalLevel: 0, color: "#ffffff", nestmentLevel: 0, items: [
+ { id: "mambojumbo2", name: "Costs", verticalLevel: 1, color: "#ff0000", nestmentLevel: 1, items: [] },
+ { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 1, items: [] },
+]}];
 
 
 export default function Table () {
@@ -45,6 +45,7 @@ export default function Table () {
     setAddField(false);
 
     updateAllReports(reportsData, newItem);
+    updateStorage("reports", reportsData);
   }
 
   const handleUpdateFields = (updatedItem) => {
@@ -118,7 +119,6 @@ export default function Table () {
                   reportIndex={reportIndex}
                   editReportMode={editReportMode}
                   setEditReportMode={setEditReportMode}
-                  isSubfield={false}
                   fieldsData={fieldsData}
                 />
               </td>

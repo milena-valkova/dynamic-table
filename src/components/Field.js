@@ -8,22 +8,32 @@ import FormInput from "./FormInput";
 
 export default function Field ({field, fields, reports, setReports, handleUpdateField, isSubitem}) {
   const { insertField, editField, deleteField, formFieldInputs } = useField();
-  const { deleteCorrespondingReport } = useReport();
+  const { deleteCorrespondingReport, updateCorrespondingSubReports } = useReport();
   const { updateStorage } = useStorage();
 
   const [ expand, setExpand ] = useState(false);
   const [ editMode, setEditMode ] = useState(false);
   const [ showInput, setShowInput ] = useState(false);
 
-  const handleAdd = (currentId, newItem) => {
-    const finalStructure = insertField(field, currentId, newItem);
-    handleUpdateField(finalStructure);
+  const keyName = field.name.toLowerCase().replace(" ","_");
 
-  }
+  // const onChangeFieldReports = (reports, currentId, newItem, oldKey) => {
+  //   const reportsCopy = [...reports];
+  //   reportsCopy.forEach(report => {
+  //     updateCorrespondingSubReports(report[oldKey ? oldKey : keyName], currentId, newItem, keyName);
+  //   });
+  //   debugger;
+  //   setReports(reportsCopy);
+  //   updateStorage("reports", reportsCopy);
+  // }
 
   const handleUpdate = (currentId, value) => {
+    console.log("old: ", field.name)
+    const oldKey = field.name.toLowerCase().replace(" ","_");
+
     const finalStructure = editField(field, currentId, value);
     handleUpdateField(finalStructure);
+    // onChangeFieldReports(reports, currentId, finalStructure, oldKey);
   }
 
   const handleDelete = (currentId) => {
@@ -42,6 +52,19 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
   const handleCancel = () => {
     setEditMode(false);
     setShowInput(false);
+  }
+
+  const handleAdd = (currentId, newItem) => {
+    const finalStructure = insertField(field, currentId, newItem);
+    handleUpdateField(finalStructure);
+
+    const reportsCopy = [...reports];
+    reportsCopy.forEach(report => {
+      updateCorrespondingSubReports(report, currentId, newItem);
+    });
+
+    setReports(reportsCopy);
+    updateStorage("reports", reportsCopy);
   }
 
   const handleSubmit = (event) => {
