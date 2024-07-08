@@ -10,7 +10,7 @@ const useStorage = () => {
     const collator = new Intl.Collator('en', { sensitivity: 'base' });
     result?.sort((a, b) => collator.compare(a.verticalLevel, b.verticalLevel));
 
-    return result.length ? result : undefined;
+    return result?.length ? result : undefined;
   }
 
   return { updateStorage, returnStorage }

@@ -6,7 +6,7 @@ function App() {
   return (
     <div className='container'>
       <h1 className='header'>
-        Dynamic table task
+        Fully Dynamic table
       </h1>
       <Suspense fallback={<div>Loading...</div>}>
         <Table />
