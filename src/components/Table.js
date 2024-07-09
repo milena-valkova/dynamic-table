@@ -21,8 +21,8 @@ const Table = memo(() => {
   const { formFieldInputs } = useField();
   const { insertReport, deleteReport, updateAllReports } = useReport();
 
-  const [ fieldsData, setFieldsData ] = useState(returnStorage("fields") || []);
-  const [ reportsData, setReportsData ] = useState(returnStorage("reports") || []);
+  const [ fieldsData, setFieldsData ] = useState(returnStorage("fields"));
+  const [ reportsData, setReportsData ] = useState(returnStorage("reports"));
   const [ addField, setAddField ] = useState(false);
   const [ editReportMode, setEditReportMode ] = useState(null);
 
