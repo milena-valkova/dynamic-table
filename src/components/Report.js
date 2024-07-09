@@ -1,7 +1,7 @@
 import { memo, useCallback } from "react";
 import useReport from '../hooks/useReport';
 
-const Report =  memo(({
+const Report = memo(({
   field, 
   reportsData, 
   setReportsData, 
@@ -13,7 +13,6 @@ const Report =  memo(({
   fieldsData
 }) => {
   const { updateReport } = useReport();
-
   const handleReportUpdate = useCallback(( e ) => {
     const updatedItem = updateReport(fieldsData, report, report[reportKey].id, e.target.value);
 
@@ -30,9 +29,9 @@ const Report =  memo(({
         item.id === temp.id ? temp : item 
       )
     );
-  },[fieldsData, report, reportKey, reportsData, setReportsData, updateReport]);
+  },[fieldsData, report, reportKey, reportsData]);
 
-  const checkIfIsEditMode = useCallback((obj , id) =>{
+  const checkIfIsEditMode = (obj , id) =>{
     if (obj.id === id) {
       return true;
     }
@@ -47,7 +46,7 @@ const Report =  memo(({
     }
   
     return false;
-  },[]);
+  };
 
   return (
   report[reportKey] && 

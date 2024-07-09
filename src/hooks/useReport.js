@@ -1,4 +1,3 @@
-
 import { setNewUuid, returnFieldKey } from '../utils/common';
 
 const useReport = () => {

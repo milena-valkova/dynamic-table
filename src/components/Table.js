@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
+
+import { memo, useEffect, useState, useCallback } from 'react';
 import useField from '../hooks/useField';
 import useStorage from '../hooks/useStorage';
 import useReport from '../hooks/useReport';
@@ -15,14 +16,13 @@ import TableHead from './TableHead';
 //  { id: "mambojumbo3", name: "Net Income", verticalLevel: 2, color: "#f6b73c", nestmentLevel: 1, items: [] },
 // ]}];
 
-
-export default function Table () {
+const Table = memo(() => {
   const { updateStorage, returnStorage } = useStorage();
   const { formFieldInputs } = useField();
   const { insertReport, deleteReport, updateAllReports } = useReport();
 
   const [ fieldsData, setFieldsData ] = useState(returnStorage("fields") || []);
-  const [ reportsData, setReportsData ] = useState(returnStorage("reports") ||[]);
+  const [ reportsData, setReportsData ] = useState(returnStorage("reports") || []);
   const [ addField, setAddField ] = useState(false);
   const [ editReportMode, setEditReportMode ] = useState(null);
 
@@ -30,7 +30,7 @@ export default function Table () {
   //   updateStorage("fields", fields)
   // },[])
 
-  const handleAddField = useCallback((event) => { 
+  const handleAddField = (event) => { 
     const newItem = returnNewItem(event);
     const temp = [...fieldsData, newItem];
     setFieldsData(temp);
@@ -39,7 +39,7 @@ export default function Table () {
 
     updateAllReports(reportsData, newItem);
     updateStorage("reports", reportsData);
-  },[fieldsData, reportsData, updateStorage, updateAllReports]);
+  };
 
   const handleUpdateFields = useCallback((updatedItem) => {
     setFieldsData((prevData) =>
@@ -51,30 +51,27 @@ export default function Table () {
     setTimeout(()=>{
       updateStorage("fields", fieldsData);
     });
-  },[fieldsData, updateStorage]);
+  },[fieldsData]);
 
-  const handleDeleteReport = useCallback((id) => {
+  const handleDeleteReport = (id) => {
     const newReports = deleteReport(reportsData, id);
     setReportsData(newReports);
     updateStorage("reports", newReports);
-  },[reportsData, deleteReport, updateStorage]);
+  };
 
-  const handleInsertReport = useCallback(() => {
+  const handleInsertReport = () => {
     const newReport = {id: setNewUuid()}
 
     const temp = insertReport(fieldsData, newReport);
     const reportsArray = [...reportsData, temp];
     setReportsData(reportsArray);
     updateStorage("reports", reportsArray);
-  },[fieldsData, reportsData, insertReport, updateStorage]);
+  };
 
   const onSaveReport = () => {
     setEditReportMode(null);
-
-    setTimeout(()=>{
-      updateStorage("reports", reportsData);
-    });
-  }
+    updateStorage("reports", reportsData);
+  };
 
   return (
     <table className='mb'>
@@ -145,4 +142,7 @@ export default function Table () {
       </tbody>
     </table>
   );
-}
+})
+
+export default Table;
+

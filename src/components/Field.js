@@ -23,17 +23,17 @@ const Field = memo(({field, fields, reports, setReports, handleUpdateField, isSu
     });
     setReports(reportsCopy);
     updateStorage("reports", reportsCopy);
-  },[setReports, updateReportTree, updateStorage])
+  },[reports]);
 
   const handleUpdate = useCallback((currentId, value) => {
     const oldKey = field.name.toLowerCase().replace(" ","_");
 
     const finalStructure = editField(field, currentId, value);
     handleUpdateField(finalStructure);
-    onChangeReportsAccordingly (reports, currentId, finalStructure, oldKey);
+    onChangeReportsAccordingly(reports, currentId, finalStructure, oldKey);
   },[field, editField, handleUpdateField, onChangeReportsAccordingly, reports]);
 
-  const handleDelete = useCallback((currentId) => {
+  const handleDelete = (currentId) => {
     const finalStructure = deleteField(fields, currentId);
     const temp = {...finalStructure};
     handleUpdateField(temp);
@@ -44,14 +44,14 @@ const Field = memo(({field, fields, reports, setReports, handleUpdateField, isSu
     );
     setReports(reportsCopy);
     updateStorage("reports", reportsCopy);
-  },[deleteField, fields, handleUpdateField, reports, setReports, updateStorage, deleteCorrespondingReport]);
+  };
 
   const handleCancel = () => {
     setEditMode(false);
     setShowInput(false);
   }
 
-  const handleAdd = useCallback((currentId, newItem) => {
+  const handleAdd = (currentId, newItem) => {
     const finalStructure = insertField(field, currentId, newItem);
     handleUpdateField(finalStructure);
 
@@ -62,7 +62,7 @@ const Field = memo(({field, fields, reports, setReports, handleUpdateField, isSu
 
     setReports(reportsCopy);
     updateStorage("reports", reportsCopy);
-  },[field, handleUpdateField, insertField, reports, setReports, updateCorrespondingSubReports, updateStorage]);
+  };
 
   const handleSubmit = useCallback((event) => {
     const newItem = returnNewItem(event, field);
@@ -70,7 +70,7 @@ const Field = memo(({field, fields, reports, setReports, handleUpdateField, isSu
     handleAdd(field.id, newItem);
     setShowInput(false);
     setExpand(false);
-  },[field, handleAdd]);
+  },[field]);
 
   const handleEdit = useCallback((event) => {
     const updatedPart = isSubitem ? returnUpdatedItem(event, isSubitem, field) : returnUpdatedItem(event, isSubitem);
@@ -78,7 +78,7 @@ const Field = memo(({field, fields, reports, setReports, handleUpdateField, isSu
     setEditMode(false);
     setShowInput(false);
     setExpand(false);
-  },[field, handleUpdate, isSubitem]);
+  },[field, isSubitem]);
 
   const handleAddSubField = () => {
     setEditMode(false);

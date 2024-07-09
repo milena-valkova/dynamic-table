@@ -1,8 +1,6 @@
-import { memo } from "react";
 import Action from "./Action";
 
-const TableHead = memo(({fields, reports, handleDeleteReport, onSaveReport, editReportMode}) => {
-
+const TableHead = ({fields, reports, handleDeleteReport, onSaveReport, editReportMode}) => {
   return (
     <thead>
       <tr>
@@ -22,6 +20,6 @@ const TableHead = memo(({fields, reports, handleDeleteReport, onSaveReport, edit
       </tr>
     </thead>
   )
-})
+};
 
 export default TableHead;
