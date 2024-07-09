@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { memo, Fragment, useState, useCallback } from "react";
 import { returnNewItem, returnUpdatedItem } from '../utils/common';
 import useField from '../hooks/useField';
 import useReport from '../hooks/useReport';
@@ -6,7 +6,7 @@ import useStorage from '../hooks/useStorage';
 import Action from "./Action";
 import FormInput from "./FormInput";
 
-export default function Field ({field, fields, reports, setReports, handleUpdateField, isSubitem}) {
+const Field = memo(({field, fields, reports, setReports, handleUpdateField, isSubitem}) => {
   const { insertField, editField, deleteField, formFieldInputs } = useField();
   const { deleteCorrespondingReport, updateCorrespondingSubReports, updateReportTree } = useReport();
   const { updateStorage } = useStorage();
@@ -15,7 +15,7 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
   const [ editMode, setEditMode ] = useState(false);
   const [ showInput, setShowInput ] = useState(false);
 
-  const onChangeReportsAccordingly = (reports, currentId, newItem, oldKey) => {
+  const onChangeReportsAccordingly = useCallback((reports, currentId, newItem, oldKey) => {
     const reportsCopy = [...reports];
 
     reportsCopy.forEach(report => {
@@ -23,17 +23,17 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
     });
     setReports(reportsCopy);
     updateStorage("reports", reportsCopy);
-  }
+  },[setReports, updateReportTree, updateStorage])
 
-  const handleUpdate = (currentId, value) => {
+  const handleUpdate = useCallback((currentId, value) => {
     const oldKey = field.name.toLowerCase().replace(" ","_");
 
     const finalStructure = editField(field, currentId, value);
     handleUpdateField(finalStructure);
     onChangeReportsAccordingly (reports, currentId, finalStructure, oldKey);
-  }
+  },[field, editField, handleUpdateField, onChangeReportsAccordingly, reports]);
 
-  const handleDelete = (currentId) => {
+  const handleDelete = useCallback((currentId) => {
     const finalStructure = deleteField(fields, currentId);
     const temp = {...finalStructure};
     handleUpdateField(temp);
@@ -44,14 +44,14 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
     );
     setReports(reportsCopy);
     updateStorage("reports", reportsCopy);
-  } 
+  },[deleteField, fields, handleUpdateField, reports, setReports, updateStorage, deleteCorrespondingReport]);
 
   const handleCancel = () => {
     setEditMode(false);
     setShowInput(false);
   }
 
-  const handleAdd = (currentId, newItem) => {
+  const handleAdd = useCallback((currentId, newItem) => {
     const finalStructure = insertField(field, currentId, newItem);
     handleUpdateField(finalStructure);
 
@@ -62,23 +62,23 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
 
     setReports(reportsCopy);
     updateStorage("reports", reportsCopy);
-  }
+  },[field, handleUpdateField, insertField, reports, setReports, updateCorrespondingSubReports, updateStorage]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = useCallback((event) => {
     const newItem = returnNewItem(event, field);
 
     handleAdd(field.id, newItem);
     setShowInput(false);
     setExpand(false);
-  }
+  },[field, handleAdd]);
 
-  const handleEdit = (event) => {
+  const handleEdit = useCallback((event) => {
     const updatedPart = isSubitem ? returnUpdatedItem(event, isSubitem, field) : returnUpdatedItem(event, isSubitem);
     handleUpdate(field.id, updatedPart)
     setEditMode(false);
     setShowInput(false);
     setExpand(false);
-  }
+  },[field, handleUpdate, isSubitem]);
 
   const handleAddSubField = () => {
     setEditMode(false);
@@ -141,4 +141,6 @@ export default function Field ({field, fields, reports, setReports, handleUpdate
       </>
     </div>
   )
-};
+});
+
+export default Field;

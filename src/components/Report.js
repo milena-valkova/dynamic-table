@@ -1,6 +1,7 @@
+import { memo, useCallback } from "react";
 import useReport from '../hooks/useReport';
 
-export default function Report ({
+const Report =  memo(({
   field, 
   reportsData, 
   setReportsData, 
@@ -10,10 +11,10 @@ export default function Report ({
   editReportMode, 
   setEditReportMode, 
   fieldsData
-}){
+}) => {
   const { updateReport } = useReport();
 
-  const handleReportUpdate = ( e ) => {
+  const handleReportUpdate = useCallback(( e ) => {
     const updatedItem = updateReport(fieldsData, report, report[reportKey].id, e.target.value);
 
     const temp = Object.keys(reportsData[0]).map(key => {
@@ -29,9 +30,9 @@ export default function Report ({
         item.id === temp.id ? temp : item 
       )
     );
-  }
+  },[fieldsData, report, reportKey, reportsData, setReportsData, updateReport]);
 
-  const checkIfIsEditMode = (obj , id) =>{
+  const checkIfIsEditMode = useCallback((obj , id) =>{
     if (obj.id === id) {
       return true;
     }
@@ -46,7 +47,7 @@ export default function Report ({
     }
   
     return false;
-  }
+  },[]);
 
   return (
   report[reportKey] && 
@@ -82,4 +83,6 @@ export default function Report ({
       })}
     </div>
   )
-}
+})
+
+export default Report;

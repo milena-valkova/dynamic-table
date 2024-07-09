@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import useField from '../hooks/useField';
 import useStorage from '../hooks/useStorage';
 import useReport from '../hooks/useReport';
@@ -30,7 +30,7 @@ export default function Table () {
   //   updateStorage("fields", fields)
   // },[])
 
-  const handleAddField = (event) => { 
+  const handleAddField = useCallback((event) => { 
     const newItem = returnNewItem(event);
     const temp = [...fieldsData, newItem];
     setFieldsData(temp);
@@ -39,9 +39,9 @@ export default function Table () {
 
     updateAllReports(reportsData, newItem);
     updateStorage("reports", reportsData);
-  }
+  },[fieldsData, reportsData, updateStorage, updateAllReports]);
 
-  const handleUpdateFields = (updatedItem) => {
+  const handleUpdateFields = useCallback((updatedItem) => {
     setFieldsData((prevData) =>
       prevData.map((item) =>
         item.id === updatedItem.id ? updatedItem : item
@@ -51,22 +51,22 @@ export default function Table () {
     setTimeout(()=>{
       updateStorage("fields", fieldsData);
     });
-  };
+  },[fieldsData, updateStorage]);
 
-  const handleDeleteReport = (id) => {
+  const handleDeleteReport = useCallback((id) => {
     const newReports = deleteReport(reportsData, id);
     setReportsData(newReports);
     updateStorage("reports", newReports);
-  };
+  },[reportsData, deleteReport, updateStorage]);
 
-  const handleInsertReport = () => {
+  const handleInsertReport = useCallback(() => {
     const newReport = {id: setNewUuid()}
 
     const temp = insertReport(fieldsData, newReport);
     const reportsArray = [...reportsData, temp];
     setReportsData(reportsArray);
     updateStorage("reports", reportsArray);
-  };
+  },[fieldsData, reportsData, insertReport, updateStorage]);
 
   const onSaveReport = () => {
     setEditReportMode(null);
